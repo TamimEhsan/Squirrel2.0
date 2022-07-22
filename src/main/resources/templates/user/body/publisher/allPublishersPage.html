@@ -1,0 +1,26 @@
+<div th:fragment="fragment">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">Publishers</li>
+        </ol>
+    </nav>
+    <div class="d-flex flex-wrap justify-content-evenly">
+
+
+        <div th:each="publisher: ${publishers}" class="card mb-1 m-1" style="width: 12rem;">
+            <img class="card-img-top p-3 circular" th:src="@{${publisher.image}}" alt="Card image cap">
+            <div class="card-body" style="display: flex;flex-direction: column;justify-content:space-between;">
+                <h5 class="card-title" th:text="${publisher.name}"/>
+                <div class="d-grid gap-2">
+                    <a th:href="@{'/publishers/'+${publisher.publisherId}}" class="btn btn-warning">
+                        <i class="bi bi-journals"></i>
+                        View Publisher
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

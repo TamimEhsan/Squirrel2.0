@@ -1,0 +1,28 @@
+<div th:fragment="fragment">
+    <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/authors">Authors</a></li>
+            <li class="breadcrumb-item active" th:text="${author.name}"/>
+        </ol>
+    </nav>
+
+
+    <div class="shadow p-2 mt-3">
+        <div class="row justify-items-start p-5">
+
+            <div class="col-2"><img class="circular img-fluid" th:src="@{${author.image}}" ></div>
+            <div class="col">
+                <h3 th:text="${author.name}"/>
+                <div class="pt-2"th:text="${author.description}"/>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="shadow p-2 mt-3">
+
+        <h3 th:text="'Books of '+${author.name}"/>
+        <div th:replace="user/body/book/allBooksPage :: fragment">All books of author</div>
+    </div>
+</div>

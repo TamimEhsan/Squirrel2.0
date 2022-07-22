@@ -1,0 +1,51 @@
+<div th:fragment="fragment">
+    <!--<% if(title === 'Books'){ %>-->
+    <!--    <nav aria-label="breadcrumb">-->
+    <!--        <ol class="breadcrumb">-->
+    <!--            <li class="breadcrumb-item"><a href="/">Home</a></li>-->
+    <!--            <li class="breadcrumb-item active">Books</li>-->
+    <!--        </ol>-->
+    <!--    </nav>-->
+    <!--<% } %>-->
+
+
+    <h6 th:text="'Showing '+${start+1}+' to '+${start+books.size()}+' of '+${cnt}+' books'"/>
+    <div class="d-flex flex-wrap justify-content-evenly">
+
+
+        <div  th:each="book: ${books}" class="card mb-1 m-1" style="width: 12rem;">
+            <img class="card-img-top p-3" th:src="@{${book.image}}"
+                 alt="Card image cap">
+            <div class="card-body" style="display: flex;flex-direction: column;justify-content:space-between;">
+                <p style="color: #266dd3;font-weight: 650; font-size: 18px;" class="card-title" th:text="${book.name}"/>
+                <div>
+                    <!--                <span class="ml-0">-->
+                    <!--                    <%if(books[i].REVIEW_COUNT){%>-->
+                    <!--                        <% for(let stars = 0;stars < books[i].STAR / Math.max(books[i].REVIEW_COUNT, 1);stars++){ %>-->
+                    <!--                            ⭐-->
+                    <!--                        <% } %>-->
+                    <!--                    <%}else{%>-->
+                    <!--                        No Reviews yet-->
+                    <!--                    <%}%>-->
+                    <!--                </span>-->
+
+                    <p class="card-text" th:text="'Price: Tk. '+${book.name}"/>
+                    <div class="d-grid gap-2">
+
+                        <a th:href="@{'/books/'+${book.bookId}}" class="btn btn-warning">
+                            <i class="bi bi-book-half"></i>
+                            VIEW BOOK
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+
+    </div>
+
+    <div style="margin: auto" id="paginationDiv" th:data-pages="${pages}" th:data-page="${page}"
+         th:data-href="${target}"  ></div>
+    <script async src="/scripts/pagination.js"></script>
+</div>
