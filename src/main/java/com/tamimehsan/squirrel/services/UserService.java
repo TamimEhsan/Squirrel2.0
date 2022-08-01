@@ -21,8 +21,11 @@ public class UserService {
     }
 
     @Transactional
-    public void save(User user){
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+    public User save(User user){
+        System.out.println("before encoding::"+user.getPassword());
+        if( user.getUserId() == 0 )
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        System.out.println("after encoding::"+user.getPassword());
+        return userRepository.save(user);
     }
 }

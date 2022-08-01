@@ -38,3 +38,23 @@ CREATE TABLE public.rates
         ON DELETE SET NULL
         NOT VALID
 );
+
+CREATE TABLE public.cart
+(
+    cart_id serial,
+    user_id integer NOT NULL,
+    created_at date DEFAULT now(),
+    PRIMARY KEY (cart_id),
+    ADD CONSTRAINT user_cart_fk FOREIGN KEY (user_id)
+        REFERENCES public.users (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE SET NULL
+        NOT VALID
+);
+
+ALTER TABLE public.users
+    ADD CONSTRAINT user_cart_fk FOREIGN KEY (cart_id)
+        REFERENCES public.cart (cart_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE SET NULL
+    NOT VALID;

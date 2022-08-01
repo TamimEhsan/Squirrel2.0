@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery("select username,password,enabled from users where username=?")
+                .usersByUsernameQuery("select username,password,'true' as enabled from users where username=?")
                 .authoritiesByUsernameQuery("select username, authority from users where username=?");
     }
 
@@ -36,7 +36,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN")
-                .antMatchers("/register").permitAll()
+                .antMatchers("/signup","signup/").permitAll()
+                .antMatchers("/images/**").permitAll()
                 .antMatchers("/**").hasRole("CUSTOMER")
                 .and().formLogin().loginPage("/login").permitAll()
                 .successHandler((request, response, authentication) -> {

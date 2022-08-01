@@ -1,0 +1,14 @@
+<div th:fragment="fragment" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img th:src="@{${carousalImages[0]}}" class="d-block w-100" alt="...">
+        </div>
+        <th:block th:each="i: ${#numbers.sequence(1,4)}">
+            <div class="carousel-item" >
+                <img th:src="@{${carousalImages[i]}}" class="d-block w-100" alt="...">
+            </div>
+        </th:block>
+    </div>
+
+</div>

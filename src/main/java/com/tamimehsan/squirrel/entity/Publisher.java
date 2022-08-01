@@ -11,7 +11,7 @@ import java.util.List;
 public class Publisher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "publisher_id")
     public int publisherId;
 

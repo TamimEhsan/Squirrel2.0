@@ -1,22 +1,16 @@
 package com.tamimehsan.squirrel.controller;
 
-import com.tamimehsan.squirrel.entity.Author;
-import com.tamimehsan.squirrel.entity.Book;
-import com.tamimehsan.squirrel.entity.Publisher;
-import com.tamimehsan.squirrel.entity.User;
-import com.tamimehsan.squirrel.services.AuthorService;
-import com.tamimehsan.squirrel.services.BookService;
-import com.tamimehsan.squirrel.services.PublisherService;
-import com.tamimehsan.squirrel.services.UserService;
+import com.tamimehsan.squirrel.entity.*;
+import com.tamimehsan.squirrel.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -35,6 +29,9 @@ public class UserController {
     private AuthorService authorService;
 
     @Autowired
+    private CartService cartService;
+
+    @Autowired
     private PublisherService publisherService;
 
     @GetMapping("/")
@@ -49,7 +46,7 @@ public class UserController {
 //        System.out.println(author);
         Book book = bookService.getBooksById(2);
         ArrayList<Book> books = bookService.getAllBook();
-        System.out.println(books);
+//        System.out.println(books);
 //        System.out.println(book);
         ModelAndView modelAndView = new ModelAndView("user/base");
         modelAndView.addObject("name","Kenobi");
@@ -63,14 +60,10 @@ public class UserController {
     }
 
 
-
-
-
-
-
     @GetMapping("/login")
     public ModelAndView login(ModelMap model, String error, String logout, String verified) {
-        System.out.println("hello general kenobis");
+        System.out.println("hello general kenobi");
+        System.out.println(error);
         if (error != null) {
             model.put("error", "Your username or password is invalid.");
         }
@@ -80,48 +73,86 @@ public class UserController {
         }
 
         model.put("user", new User());
-        ModelAndView mv = new ModelAndView("user/login");
+        ModelAndView mv = new ModelAndView("user/base");
+        String[] ci = new String[]{"images/loginCarousel1.png", "images/loginCarousel2.png", "images/loginCarousel3.png", "images/loginCarousel4.png", "images/loginCarousel5.png", "images/loginCarousel6.png"};
+        mv.addObject("carousalImages",ci);
+        mv.addObject("bodyView","user/loginnew");
         mv.addObject("verified", verified);
         return mv;
     }
 
-    @GetMapping("/register")
-    public ModelAndView register(ModelMap modelMap, String error){
-        modelMap.put("customer", new Customer());
+    @GetMapping("/signup")
+    public ModelAndView register(ModelMap model, String error){
+        model.put("customer", new User());
 
-        ModelAndView mv = new ModelAndView("user/register");
-        if(error != null) {
-            modelMap.put("error", "This username is already taken");
-        }
+        model.put("user", new User());
+        ModelAndView mv = new ModelAndView("user/base");
+        String[] ci = new String[]{"images/loginCarousel1.png", "images/loginCarousel2.png", "images/loginCarousel3.png", "images/loginCarousel4.png", "images/loginCarousel5.png", "images/loginCarousel6.png"};
+        mv.addObject("carousalImages",ci);
+        mv.addObject("bodyView","user/signup");
+        mv.addObject("hasErrors",false);
+//        if(error != null) {
+//            model.put("error", "This username is already taken");
+//        }
         return mv;
     }
-    @PostMapping("/register")
-    public String register(@Validated @ModelAttribute("customer") Customer customer, BindingResult bindingResult, ModelMap modelMap){
-        if (foundDuplicateUsername(customer.getUsername())) {
-            bindingResult.rejectValue("username", "", "This username has already been taken!");
+    @PostMapping("/signup")
+    public ModelAndView register(@Validated @ModelAttribute("user") User customer, BindingResult bindingResult, ModelMap modelMap){
+        List<String> errors = new ArrayList<>();
+        customer.setAuthority("ROLE_CUSTOMER");
+        System.out.println(customer);
+        if ( userService.findByUserName(customer.getUsername()) !=null ) {
+//            bindingResult.rejectValue("username", "", "This username has already been taken!");
+            errors.add("User name already exists");
+        }else if( !customer.getPassword().equals(customer.getPassword2()) ){
+           // bindingResult.rejectValue("password2", "", "Password doesn't match");
+            System.out.println("pass mile na");
+            errors.add("Password doesn't match");
         }
 
-        if (bindingResult.hasErrors()) {
-            return "redirect:/register?error=error";
+        System.out.println("aaaaaaavvvvvvvvvvccccccccccc");
+        System.out.println(customer);
+
+        if (errors.size()>0) {
+            ModelAndView mv = new ModelAndView("user/base");
+            String[] ci = new String[]{"images/loginCarousel1.png", "images/loginCarousel2.png", "images/loginCarousel3.png", "images/loginCarousel4.png", "images/loginCarousel5.png", "images/loginCarousel6.png"};
+            mv.addObject("carousalImages",ci);
+            mv.addObject("hasErrors",true);
+            mv.addObject("errors",errors);
+            mv.addObject("bodyView","user/signup");
+            return mv;
         }
-        User user = new User();
-        user.setUsername(customer.getUsername());
-        user.setPassword(customer.getPassword());
-        user.setAuthority("ROLE_CUSTOMER");
-        user.setEnabled(false);
-        user.setVerification(RandomString.make(64));
-        userService.save(user);
-        customerService.save(customer);
-        String content = "Dear [[name]],\n"
-                + "Please click the link below to verify your registration:\n"
-                + "link\n[[URL]]\n"
-                + "Thank you,\n"
-                + "KenaKata";
-        content = content.replace("[[name]]", customer.getFname()+" "+customer.getLname());
-        String verifyURL =  rootPath+"/verify?code=" + user.getVerification();
-        content = content.replace("[[URL]]", verifyURL);
-        emailSenderService.sendSimpleEmail(customer.getEmail(),content,"Verification of Email");
-        return "redirect:/emailVerify";
+
+
+        User user = userService.save(customer);
+        System.out.println("after saving user:: "+user);
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cart.setUserId(user.getUserId());
+        user.setCart(cart);
+        System.out.println("Cart after inserting user:: "+cart);
+        cart = cartService.save(cart);
+
+        user = userService.save(user);
+        return new ModelAndView("redirect:/login", modelMap);
+//        User user = new User();
+//        user.setUsername(customer.getUsername());
+//        user.setPassword(customer.getPassword());
+//        user.setAuthority("ROLE_CUSTOMER");
+//        user.setEnabled(true);
+       // user.setVerification(RandomString.make(64));
+      //  userService.save(user);
+//        userService.save(customer);
+//        String content = "Dear [[name]],\n"
+//                + "Please click the link below to verify your registration:\n"
+//                + "link\n[[URL]]\n"
+//                + "Thank you,\n"
+//                + "KenaKata";
+//        content = content.replace("[[name]]", customer.getFname()+" "+customer.getLname());
+//        String verifyURL =  rootPath+"/verify?code=" + user.getVerification();
+//        content = content.replace("[[URL]]", verifyURL);
+//        emailSenderService.sendSimpleEmail(customer.getEmail(),content,"Verification of Email");
+//        return "redirect:/login";
     }
 
     @GetMapping("/access-denied")

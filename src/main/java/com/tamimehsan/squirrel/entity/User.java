@@ -3,6 +3,7 @@ package com.tamimehsan.squirrel.entity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,14 +14,18 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int user_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private int userId;
 
     @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
+
+    @Transient
+    private String password2;
 
     @Column
     private String first_name;
@@ -34,18 +39,28 @@ public class User {
 
     private String authority;
 
-    @Column
-    private String verification;
+    @Column(nullable = true)
+    private boolean verification;
 
     @Column
     private String image;
 
-    public int getUser_id() {
-        return user_id;
+    @Column
+    private String email;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "cart_id",nullable = true)
+    private Cart cart;
+
+
+    // add cart_id here
+
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -62,6 +77,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassword2() {
+        return password2;
+    }
+
+    public void setPassword2(String password2) {
+        this.password2 = password2;
     }
 
     public String getFirst_name() {
@@ -96,11 +119,11 @@ public class User {
         this.authority = authority;
     }
 
-    public String getVerification() {
+    public boolean getVerification() {
         return verification;
     }
 
-    public void setVerification(String verification) {
+    public void setVerification(Boolean verification) {
         this.verification = verification;
     }
 
@@ -112,18 +135,37 @@ public class User {
         this.image = image;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", password2='" + password2 + '\'' +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
                 ", enabled=" + enabled +
                 ", authority='" + authority + '\'' +
                 ", verification='" + verification + '\'' +
                 ", image='" + image + '\'' +
+                ", email='" + email + '\'' +
+                ", cart=" + cart +
                 '}';
     }
 }
