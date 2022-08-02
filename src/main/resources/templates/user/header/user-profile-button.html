@@ -1,7 +1,7 @@
 <div th:fragment="fragment" class="dropdown">
     <button class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
         <img class="rounded-circle" th:src="@{${user.getImage()}}" width="36px">
-        <div th:text="${user.getUsername()}"/>
+        <div th:text="${user.getFirst_name()}"/>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <li><a class="dropdown-item" href="/my-section/profile">My Account</a></li>

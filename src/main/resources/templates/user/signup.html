@@ -22,10 +22,24 @@
             <div class="form-floating mb-3">
 
                 <input type="text" class="form-control" name="username" required >
-                <label for="handle">Name</label>
+                <label for="handle">User Name</label>
 
             </div>
 
+
+            <div class="form-floating mb-3">
+
+                <input type="text" class="form-control" name="first_name" required >
+                <label for="handle">First Name</label>
+
+            </div>
+
+            <div class="form-floating mb-3">
+
+                <input type="text" class="form-control" name="last_name" required >
+                <label for="handle">Last Name</label>
+
+            </div>
 
 
             <!-- email -->
@@ -47,6 +61,8 @@
                 <label for="password2">Confirm Password</label>
             </div>
 
+
+
             <div th:if="${hasErrors}" >
                 <div class="row m-2 mx-0 pb-0 alert alert-danger">
                     <ul>
@@ -58,9 +74,7 @@
 
             <!-- submit -->
             <div class="d-grid gap-2 mt-3">
-                <button type="submit" class="btn btn-lg btn-primary" style="background-color: #33c24d;border: 0">Create
-                    Account
-                </button>
+                <button type="submit" class="btn btn-lg btn-primary" style="background-color: #33c24d;border: 0">Create Account </button>
             </div>
 
         </form>

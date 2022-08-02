@@ -1,0 +1,92 @@
+<div th:fragment="fragment" class="row">
+    <div class="col-3">
+        <div class="shadow mt-3 p-2">
+            <div class="row no-gutters">
+                <div class="col-3">
+                    <img class="circular" th:src="@{${user.image}}" width="50">
+                </div>
+                <div class="col-9">
+                    <span>Hello</span>
+                    <h5 th:text="${user.username}"/>
+                </div>
+            </div>
+        </div>
+        <div class="shadow mt-3 p-2">
+            <div class="list-group list-group-flush">
+                <a href="/my-section/profile" class="list-group-item list-group-item-action active" aria-current="true">My Account</a>
+                <a href="/my-section/orders" class="list-group-item list-group-item-action ">My Orders</a>
+<!--                <a href="#" class="list-group-item list-group-item-action">My Lists</a>-->
+                <a href="/my-section/wishlist" class="list-group-item list-group-item-action">My Wishlist</a>
+                <a href="/my-section/reviews" class="list-group-item list-group-item-action">My Ratings and Reviews</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="shadow p-3 mt-3 d-flex justify-content-between">
+
+            <h3>Profile</h3>
+<!--            <a class="btn btn-outline-primary ms-2" href="/my-section/profile/edit">Edit Profile</a>-->
+
+
+        </div>
+        <section class="shadow mt-3 p-3">
+
+            <form modelAttribute="user" action="/my-section/profile" method="post">
+                <h3>Personal Information</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="floatingInput">User Name</label>
+                            <input disabled required type="text" name="name" th:value="${user.username}" class="form-control"
+                                   id="floatingInput" placeholder="Jon Doe">
+
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="floatingInput">Email address</label>
+                            <input disabled type="email" name="email" th:value="${user.email}" class="form-control"
+                                   id="floatingInput" placeholder="name@example.com">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h3>Contact Information</h3>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="floatingInput">First Name</label>
+                            <input type="text" name="first_name" th:value="${user.first_name}" class="form-control"
+                                   id="floatingInput" placeholder="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="floatingInput">Last Name</label>
+                            <input type="text" name="last_name" th:value="${user.last_name}" class="form-control"
+                                   id="floatingInput" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h3>Profile Picture</h3>
+                <div class="row ">
+                    <div class="col-2">
+                        <img class="img-fluid circular" th:src="@{${user.image}}">
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="floatingInput">Link</label>
+                            <input type="text" name="image" th:value="${user.image}" class="form-control"
+                                   id="floatingInput" placeholder="name@example.com">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <button class="btn btn-warning" type="submit">Save Profile</button>
+            </form>
+        </section>
+    </div>
+</div>
+
