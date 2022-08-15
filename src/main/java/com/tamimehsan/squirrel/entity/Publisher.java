@@ -1,5 +1,7 @@
 package com.tamimehsan.squirrel.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class Publisher {
     public String image;
 
     @OneToMany(mappedBy = "publisher")
+    @JsonManagedReference
     public List<Book> books;
 
 

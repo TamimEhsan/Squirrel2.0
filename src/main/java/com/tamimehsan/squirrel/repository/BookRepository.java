@@ -15,10 +15,21 @@ public interface BookRepository extends CrudRepository<Book,Integer> {
 //    @Query("SELECT * FROM Book ORDER BY name LIMIT=:limit OFFSET= :offset;")
 //    public Book getAllBooks(@Param( "offset") int offset, @Param( "limit") int limit);
 
-    public Book getBookByBookId(int book_id);
+    public Book findBookByBookId(int book_id);
     // get book by id
     // get book by author id
     public ArrayList<Book> findAll();
 
     public long count();
+
+    // find book by rating of a user
+    public ArrayList<Book> findAllByRatings_User_UserId(int user_id);
+
+    // find all picked book by user
+    public ArrayList<Book> findAllByPickeds_Cart_User_UserId(int user_id);
+
+
+    // find all unreviewedbook by user
+//    public ArrayList<Book> findAllByRating_User_UserIdAndRating_ReviewIsNull(int user_id);
+
 }

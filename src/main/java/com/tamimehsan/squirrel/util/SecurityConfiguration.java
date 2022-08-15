@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN")
                 .antMatchers("/signup","signup/").permitAll()
                 .antMatchers("/images/**").permitAll()
-                .antMatchers("/**").hasRole("CUSTOMER")
+                .antMatchers("/**").hasAnyRole("CUSTOMER","ADMIN")
                 .and().formLogin().loginPage("/login").permitAll()
                 .successHandler((request, response, authentication) -> {
                     // run custom logics upon successful login
@@ -57,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                        redirectURL = "shop/home";
 //                    }
                     else if(authority.equals("ROLE_ADMIN")){
-                        redirectURL = "admin/";
+                        redirectURL = "admin/book";
                     }
 
                     response.sendRedirect(redirectURL);

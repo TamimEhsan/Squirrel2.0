@@ -1,0 +1,52 @@
+<div th:fragment="fragment" class="row m-0">
+    <!--    menue-->
+    <div class="col-2 bg-dark text-white">
+        <div class="bg-dark text-white p-3" style="position:fixed;height: 100%;">
+            <div class="list-group list-group-dark list-group-flush">
+                <a href="/admin" class="list-group-item list-group-item-action text-white bg-dark" aria-current="true">Home</a>
+                <a href="/admin/book" class="list-group-item list-group-item-action text-white bg-dark">Books</a>
+                <a href="/admin/author" class="list-group-item list-group-item-action rounded">Authors</a>
+                <a href="/admin/publisher" class="list-group-item list-group-item-action text-white bg-dark">Publishers</a>
+                <a href="/admin/order" class="list-group-item list-group-item-action text-white bg-dark">Orders</a>
+<!--                <a href="/admin/voucher" class="list-group-item list-group-item-action text-white bg-dark">Vouchers</a>-->
+            </div>
+        </div>
+    </div>
+    <!--    contents-->
+    <div class="col-10 ">
+        <div class="shadow p-3 mb-3 mt-3">
+            <h3>Book List</h3>
+            <a class="btn btn-primary" href="/admin/author/add">
+                <i class="bi bi-plus-lg"></i>
+                ADD NEW AUTHOR
+            </a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+
+                <tr th:each="author:${authors}" >
+                    <th scope="row" th:text="${author.authorId}"></th>
+                    <td><img class="img-thumbnail" width="100px" th:src="@{${author.image}}"/></td>
+                    <td th:text="${author.name}"></td>
+                    <td >
+                        <div style="max-height:40px; max-width: 600px; overflow:hidden" th:text="${author.description}"/>...
+                    </td>
+                    <td>
+                        <div class="d-grid">
+                            <a class="btn btn-secondary btn-sm mb-1" th:href="'/admin/author/edit/'+${author.authorId}">Update</a><br/>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

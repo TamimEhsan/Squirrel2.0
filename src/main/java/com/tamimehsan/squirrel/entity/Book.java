@@ -17,7 +17,11 @@ package com.tamimehsan.squirrel.entity;
 //star
 //review_count
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -30,14 +34,21 @@ public class Book {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
+    @JsonIgnore
     public Author author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id")
+    @JsonIgnore
     public Publisher publisher;
 
     @OneToMany(mappedBy = "book")
+    @JsonIgnore
     public List<Rating> ratings;
+
+    @OneToMany(mappedBy = "book")
+    @JsonIgnore
+    public List<Picked> pickeds;
 
     @Column
     public String name;
@@ -75,8 +86,8 @@ public class Book {
     @Column
     public Integer star;
 
-    @Column
-    public Integer review_count;
+    @Column(name = "review_count")
+    public Integer reviewCount;
 
     public int getBookId() {
         return bookId;
@@ -108,6 +119,14 @@ public class Book {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public List<Picked> getPickeds() {
+        return pickeds;
+    }
+
+    public void setPickeds(List<Picked> pickeds) {
+        this.pickeds = pickeds;
     }
 
     public String getName() {
@@ -206,14 +225,18 @@ public class Book {
         this.star = star;
     }
 
-    public Integer getReview_count() {
-        return review_count;
+    public Integer getReviewCount() {
+        return reviewCount;
     }
 
-    public void setReview_count(Integer review_count) {
-        this.review_count = review_count;
+    public void setReviewCount(Integer reviewCount) {
+        this.reviewCount = reviewCount;
     }
 
+    public int getAverageRating(){
+        if( reviewCount == 0 ) return 0;
+        else return (int) Math.ceil(star / reviewCount);
+    }
     @Override
     public String toString() {
         return "Book{" +
@@ -233,7 +256,7 @@ public class Book {
                 ", genre='" + genre + '\'' +
                 ", summary='" + summary + '\'' +
                 ", star=" + star +
-                ", review_count=" + review_count +
+                ", reviewCount=" + reviewCount +
                 '}';
     }
 }

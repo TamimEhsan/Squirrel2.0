@@ -61,21 +61,41 @@
                     <h4 th:text="'TK. '+${book.price}"/>
                     <br/>
 
-                    <button th:if="${book.stock != 0}" class="btn btn-lg" onclick="makePUTrequest()"
-                            style="background-color: #ff9900;color:white; padding-bottom: 0;padding-top: 0;">
+                    <a th:if="${book.stock != 0}" class="btn btn-lg"  th:href="@{'/cart/add/'+${book.bookId}}" style="background-color: #ff9900;color:white; padding-bottom: 0;padding-top: 0;">
+<!--                            onclick="makePUTrequest()"-->
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                              class="m-3 bi bi-cart3" viewBox="0 0 16 16">
                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                         </svg>
                         Add to Cart
-                    </button>
+                    </a>
 
                     <button th:unless="${book.stock != 0}" disabled class="btn btn-lg" style="background-color:#59abe3;color:white;">Out of Stock</button>
 
                     <br/>
 
 <!--                    // add wish list here-->
+                    <a th:href="@{'/my-section/wishlist/add/'+${book.bookId}}" class="btn btn-danger mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                    </svg>
+                    Add to wish list
+                    </a>
 
+
+                    <div th:if="${error}">
+
+                        <div class="alert alert-danger col-xs-offset-1 col-xs-10" th:text="${error}"/>
+
+                    </div>
+                    <div th:if="${success}">
+
+                        <div class="alert alert-success col-xs-offset-1 col-xs-10" th:text="${success}"/>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -206,13 +226,14 @@
         <div class="p-3  d-flex justify-content-between align-items-center">
 
             <div class="d-flex ">
-            <span style="font-size: 42px;" th:text="0000"/>
+            <span style="font-size: 42px;" th:text="${book.getAverageRating()}"/>
 <!--            <span style="font-size: 42px;" th:text="${T(Math).ceil( book.stars/T(Math).max(book.review_count,1) )}"/>-->
                 <div class="m-2">
-                <span class="text-secondary" th:text="${book.review_count+' Ratings and Reviews'}"/> <br/>
+                <span class="text-secondary" th:text="${book.reviewCount+' Ratings and Reviews'}"/> <br/>
                     <span class="ml-0">
 
-                        ⭐⭐⭐
+                        <span th:if="${book.reviewCount!=0}" th:each="i:${#numbers.sequence( 1,book.getAverageRating() ) }" >⭐</span>
+                        <span th:unless="${book.reviewCount!=0}"  >No Reviews yet</span>
 
                 </span>
                 </div>
@@ -223,9 +244,9 @@
             </div>
         </div>
         <div class="p-3 d-none" id="ratings_reviews_form">
-            <form class="js--review-form" action="/reviews" method="POST">
+            <form class="js--review-form" action="/my-section/reviews/post" method="GET">
                 <div class="form-group">
-                    <input type="hidden" name="bookId" id="bookId" value=<%= book.ID %>>
+                    <input type="hidden" name="bookId" id="bookId" th:value="${book.bookId}">
                     <textarea required maxlength="500" name="review" class="form-control" id="js--review-writing" rows="3"
                               placeholder="Please write your honest opinion and give a rating"></textarea>
                 </div>
@@ -256,12 +277,12 @@
                      alt="user-img">
                 <div>
                     <div class="name-date">
-                        <span class="d-inline-block name">By <strong th:text="${review.user.username}"/> </span>,
+                        <span class="d-inline-block name">By <strong th:text="${review.user.first_name}"/> </span>,
                         <span class="date d-inline-block" th:text="${review.createdAt}"/>
                     </div>
                     <div class="stars mr-2">
 
-                        ⭐⭐⭐
+                        <span th:each="i:${#numbers.sequence(1, review.stars)}" >⭐</span>
 
                     </div>
                 </div>
@@ -274,5 +295,35 @@
 
 
     </div>
+    <div th:replace="user/body/components/toast :: fragment (successToastId = 'add-to-cart-success-toast-id',successToastMessage='Successfully added to your cart',errorToastId='add-to-cart-error-toast-id',errorToastMessage='Already added in cart')">Toaster</div>
+    <div th:replace="user/body/components/toast :: fragment (successToastId='write-review-success-toast-id',successToastMessage='',errorToastId='write-review-error-toast-id',errorToastMessage='You can\'t write reviews of books you didn\'t buy!')">Toaster</div>
+    <div th:replace="user/body/components/toast :: fragment (successToastId='write-review-2-success-toast-id',successToastMessage='',errorToastId='write-review-2-error-toast-id',errorToastMessage='You have already reviewed this book!')">Toaster</div>
 
+
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+        var canReview = /*[[${canReview}]]*/ false;
+        var hasReviewd = /*[[${hasReviewd}]]*/ false;
+        /*]]>*/
+        //console.log(hasReviewd);
+
+        function toggleReview() {
+            if (!canReview) {
+                var toastLiveExample = document.getElementById('write-review-error-toast-id')
+                var toast = new bootstrap.Toast(toastLiveExample)
+                toast.show();
+                return;
+            }
+            if (hasReviewd) {
+                var toastLiveExample = document.getElementById('write-review-2-error-toast-id')
+                var toast = new bootstrap.Toast(toastLiveExample)
+                toast.show();
+                return;
+            }
+            document.getElementById("writeReviewBtn").classList.toggle('d-none');
+            document.getElementById("ratings_reviews_form").classList.toggle('d-none');
+        }
+
+    </script>
 </div>

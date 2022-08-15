@@ -1,6 +1,8 @@
 package com.tamimehsan.squirrel.controller;
 
 import com.tamimehsan.squirrel.entity.Book;
+import com.tamimehsan.squirrel.entity.Picked;
+import com.tamimehsan.squirrel.entity.Rating;
 import com.tamimehsan.squirrel.entity.User;
 import com.tamimehsan.squirrel.services.BookService;
 import com.tamimehsan.squirrel.services.UserService;
@@ -9,10 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -74,7 +73,9 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView getBookById(@PathVariable String id){
+    public ModelAndView getBookById(@PathVariable String id,@ModelAttribute("errorAttribute") String error,@ModelAttribute("successAttribute") String success){
+        System.out.println("flash error::"+error);
+        System.out.println("flash success::"+success);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
@@ -91,12 +92,33 @@ public class BookController {
         if( book.genre == null ) book.genre = "";
         String[] genres = book.genre.split(",");
 
+        boolean hasReviewed = false;
+        if( bookService.getRatingByUserIdAndBookId(user.getUserId(),bookId) != null )
+            hasReviewed = true;
+
+        Picked picked = bookService.getPickedByUserIdAndBookId(user.getUserId(),bookId);
+        System.out.println("picked::"+picked);
+        boolean canReview = false;
+        if( bookService.getPickedByUserIdAndBookId(user.getUserId(),bookId) != null )
+            canReview = true;
+
         ModelAndView modelAndView = new ModelAndView("user/base");
         modelAndView.addObject("bodyView","user/body/book/bookPage");
         modelAndView.addObject("user",user);
         modelAndView.addObject("book",book);
         modelAndView.addObject("genres",genres);
         modelAndView.addObject("navbar",1);
+        modelAndView.addObject("canReview",canReview);
+        modelAndView.addObject("hasReviewd",hasReviewed);
+
+        modelAndView.addObject("navbar",1);
+        if (!error.equals("")) {
+            modelAndView.addObject("error", error);
+        }
+
+        if (!success.equals("")) {
+            modelAndView.addObject("success", success);
+        }
 
         return modelAndView;
     }

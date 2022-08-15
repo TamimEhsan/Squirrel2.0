@@ -19,17 +19,10 @@
             <div class="card-body" style="display: flex;flex-direction: column;justify-content:space-between;">
                 <p style="color: #266dd3;font-weight: 650; font-size: 18px;" class="card-title" th:text="${book.name}"/>
                 <div>
-                    <!--                <span class="ml-0">-->
-                    <!--                    <%if(books[i].REVIEW_COUNT){%>-->
-                    <!--                        <% for(let stars = 0;stars < books[i].STAR / Math.max(books[i].REVIEW_COUNT, 1);stars++){ %>-->
-                    <!--                            ⭐-->
-                    <!--                        <% } %>-->
-                    <!--                    <%}else{%>-->
-                    <!--                        No Reviews yet-->
-                    <!--                    <%}%>-->
-                    <!--                </span>-->
+                    <span th:if="${book.reviewCount!=0}" th:each="i:${#numbers.sequence( 1,book.getAverageRating() ) }" >⭐</span>
+                    <span th:unless="${book.reviewCount!=0}" >No Reviews yet</span>
 
-                    <p class="card-text" th:text="'Price: Tk. '+${book.name}"/>
+                    <p class="card-text" th:text="'Price: Tk. '+${book.price}"/>
                     <div class="d-grid gap-2">
 
                         <a th:href="@{'/books/'+${book.bookId}}" class="btn btn-warning">

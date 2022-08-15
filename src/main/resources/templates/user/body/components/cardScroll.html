@@ -14,14 +14,8 @@
 
                     <div>
                         <span class="ml-0">
-                            <div th:if="${book.review_count != 0}">
-                                <th:block th:each="i: ${#numbers.sequence(0, (book.star/book.review_count) -1 )}">
-                                    ⭐
-                                </th:block>
-                            </div>
-                             <div th:unless="${book.review_count != 0}">
-                                 No Reviews yet
-                            </div>
+                            <span th:if="${book.reviewCount!=0}" th:each="i:${#numbers.sequence( 1,book.getAverageRating() ) }" >⭐</span>
+                            <span th:unless="${book.reviewCount!=0}"  >No Reviews yet</span>
                         </span>
                         <h6 class="card-title" th:text="'Price: TK. '+${book.price}"/>
                         <div class="d-grid gap-2">
