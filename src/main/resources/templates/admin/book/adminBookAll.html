@@ -1,0 +1,97 @@
+<div th:fragment="fragment" class="row m-0">
+    <!--    menue-->
+    <div class="col-2 bg-dark text-white">
+        <div class="bg-dark text-white p-3" style="position:fixed;height: 100%;">
+            <div class="list-group list-group-dark list-group-flush">
+                <a href="/admin" class="list-group-item list-group-item-action text-white bg-dark" aria-current="true">Home</a>
+                <a href="/admin/book" class="list-group-item list-group-item-action rounded">Books</a>
+                <a href="/admin/author" class="list-group-item list-group-item-action text-white bg-dark">Authors</a>
+                <a href="/admin/publisher" class="list-group-item list-group-item-action text-white bg-dark">Publishers</a>
+                <a href="/admin/order" class="list-group-item list-group-item-action text-white bg-dark">Orders</a>
+<!--                <a href="/admin/voucher" class="list-group-item list-group-item-action text-white bg-dark">Vouchers</a>-->
+            </div>
+        </div>
+    </div>
+    <!--    contents-->
+    <div class="col-10 ">
+        <div class="shadow p-3 mb-3 mt-3">
+            <h3>Book List</h3>
+            <a class="btn btn-primary" href="/admin/book/add">
+                <i class="bi bi-plus-lg"></i>
+                ADD NEW BOOK
+            </a>
+            <a class="btn btn-warning" href="/admin/restock">
+                <i class="bi bi-box-seam"></i>
+                RESTOCK BOOK
+            </a>
+            <form class="d-flex" action="/admin/book/search" method="get">
+                <div class="input-group mt-2">
+                    <input style="max-width: 450px " type="text" class="form-control typer" name="keyword" placeholder="Search"
+                           aria-label="Username"
+                           aria-describedby="basic-addon1"
+                           data-words="Search by books(ex. Harry Potter),Search by Authors(ex. JK Rowling),Search by Publishers(ex. Bloomsburry)"
+                           data-delay="100" data-deleteDelay="1000">
+                    <div class="input-group-append d-grid">
+                        <button class="btn btn-primary" style="background-color: #0397d3;" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <script async src="/scripts/typer.js"></script>
+            </form>
+        </div>
+
+        <h6 th:text="'Showing '+${start+1}+' to '+${start+#lists.size(books)}+' of '+${cnt}+' books'"/>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Author</th>
+                <th scope="col">Publisher</th>
+                <th scope="col">Year</th>
+                <th scope="col">ISBN</th>
+                <th scope="col">Price</th>
+                <th scope="col">Page</th>
+                <th scope="col">Edition</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Language</th>
+                <th scope="col">Action</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+                <tr th:each="book:${books}">
+                    <th scope="row" th:text="${book.bookId}"/></td>
+                    <td><img class="img-thumbnail" width="100px" th:src="@{${book.image}}"/></td>
+                    <td th:text="${book.name}"/></td>
+                    <td th:text="${book.author.name}"/></td>
+                    <td th:text="${book.publisher.name}"/></td>
+                    <td th:text="${book.publishing_year}"/></td>
+                    <td th:text="${book.isbn}"/></td>
+                    <td th:text="${book.price}"/></td>
+                    <td th:text="${book.page}"/></td>
+                    <td th:text="${book.edition}"/></td>
+                    <td th:text="${book.stock}"/></td>
+                    <td th:text="${book.language}"/></td>
+
+                    <td>
+                        <div class="d-grid">
+                            <a th:href="'/admin/book/edit/'+${book.bookId}" class="btn btn-secondary btn-sm mb-1">Update</a><br/>
+                        </div>
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div style="margin: auto" id="paginationDiv" th:data-pages="${pages}" th:data-page="${currentPage}"
+             th:data-href="${target}"  ></div>
+        <script async src="/scripts/pagination.js"></script>
+    </div>
+</div>

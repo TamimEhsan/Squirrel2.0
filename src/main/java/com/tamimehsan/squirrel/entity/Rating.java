@@ -1,6 +1,7 @@
 package com.tamimehsan.squirrel.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "rates")
@@ -14,7 +15,7 @@ public class Rating {
     @JoinColumn(name = "user_id")
     public User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     public Book book;
 
@@ -25,7 +26,8 @@ public class Rating {
     public String review;
 
     @Column(name = "created_at")
-    public String createdAt;
+    @Temporal(TemporalType.DATE)
+    public Date createdAt;
 
     public int getRatingId() {
         return ratingId;
@@ -67,11 +69,11 @@ public class Rating {
         this.review = review;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

@@ -7,4 +7,8 @@ import java.util.ArrayList;
 
 public interface WishListRepository extends CrudRepository<WishList,Integer> {
     public ArrayList<WishList> getAllByUserId(int id);
+    public WishList findFirstByUserIdAndBook_BookId(int userId,int bookId);
+
+    // deleteByUserIdAndBook_BookId
+    public void deleteByUserIdAndBook_BookId(int userId,int bookId);
 }

@@ -1,0 +1,158 @@
+<div th:fragment="fragment">
+
+    <div class="row">
+        <div class="col-3">
+            <div class="shadow mt-3 p-2">
+                <div class="row no-gutters">
+                    <div class="col-3">
+                        <img class="circular" th:src="@{${user.image}}" width="50">
+                    </div>
+                    <div class="col-9">
+                        <span>Hello</span>
+                        <h5 th:text="${user.first_name}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="shadow mt-3 p-2">
+                <div class="list-group list-group-flush">
+                    <a href="/my-section/profile" class="list-group-item list-group-item-action" aria-current="true">My Account</a>
+                    <a href="/my-section/orders" class="list-group-item list-group-item-action ">My Orders</a>
+                    <!--                <a href="#" class="list-group-item list-group-item-action">My Lists</a>-->
+                    <a href="/my-section/wishlist" class="list-group-item list-group-item-action">My Wishlist</a>
+                    <a href="#" class="list-group-item list-group-item-action active">My Ratings and Reviews</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <section class="shadow p-3 mt-3 d-flex justify-content-between">
+                <h3>My reviews</h3>
+            </section>
+            <section class="shadow mt-3 p-3">
+                <ul class="nav nav-tabs justify-content-center">
+                    <li class="nav-item active">
+                        <a href="#reviewed" class="nav-link active" data-bs-toggle="tab">Reviewed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#unreviewed" class="nav-link" data-bs-toggle="tab">Not Reviewed</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="reviewed">
+
+                        <div th:each="rating: ${ratings}">
+                        <div class="row p-3">
+                            <div class="col-3">
+
+                                <img th:src="@{${rating.book.image}}" width="130px" height="186px">
+                            </div>
+                            <div class="col-9">
+                                <a th:href="@{'/books/'+${rating.book.bookId}}" class="text-decoration-none text-primary bold">
+                                    <h5 th:text="${rating.book.name}"/>
+                                </a>
+                                <b class="book-author pt-1" th:text="${rating.book.author.name}"/>
+                                <p class="mt-2 rating-star">
+<!--                                    <%for(let j=0;j<books[i].STARS;j++){%>⭐<%}%><%=books[i].STARS%>-->
+                                    <span th:each="i:${#numbers.sequence(1, rating.stars)}" >⭐</span>
+
+
+                                    <span class="text-secondary small ml-2">(You rated this book)</span>
+                                </p>
+                                <div class="mt-3">
+                                   <span class="text-secondary mb-2 review-details" th:text="${rating.review}"/>
+                                </div>
+                                <button th:id="'editReviewBtn'+${rating.book.bookId}" class="btn btn-warning btn-sm mt-2">
+                                <i class="bi bi-pencil"></i>
+                                Edit Your Review
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-3 d-none" th:id="'ratings_reviews_form'+${rating.book.bookId}">
+                            <form class="js--review-form" action="/my-section/reviews/edit" method="GET">
+                                <div class="form-group">
+
+                                    <input type="hidden" name="bookId" id="bookId" th:value="${rating.book.bookId}" >
+                                    <input type="hidden" name="reviewId" id="bookId" th:value="${rating.ratingId}" >
+                                    <textarea required maxlength="500" name="review" class="form-control" th:id="'review'+${rating.book.bookId}" rows="3" th:text="${rating.review}"/>
+
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="rating">
+                                        <input required type="radio" name="rating" value="5" th:id="${rating.book.bookId}+'5'">
+                                        <label th:for="${rating.book.bookId}+'5'" >☆</label>
+                                        <input required type="radio" name="rating" value="4" th:id="${rating.book.bookId}+'4'">
+                                        <label th:for="${rating.book.bookId}+'4'" >☆</label>
+                                        <input required type="radio" name="rating" value="3" th:id="${rating.book.bookId}+'3'">
+                                        <label th:for="${rating.book.bookId}+'3'" >☆</label>
+                                        <input required type="radio" name="rating" value="2" th:id="${rating.book.bookId}+'2'">
+                                        <label th:for="${rating.book.bookId}+'2'" >☆</label>
+                                        <input required type="radio" name="rating" value="1" th:id="${rating.book.bookId}+'1'">
+                                        <label th:for="${rating.book.bookId}+'1'" >☆</label>
+                                    </div>
+                                    <button class="btn btn-outline-primary" type="submit">Submit</button>
+                                    <button th:id="'cancelReviewBtn'+${rating.book.bookId}" class="btn btn-danger ms-5" >Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+
+                        <hr>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="unreviewed">
+
+
+                        <div th:each="book: ${unreviewed}" class="row p-3">
+                            <div class="col-3">
+                                <img th:src="@{${book.image}}" width="130px" height="186px">
+                            </div>
+                            <div class="col-9">
+                                <a th:href="@{'/books/'+${book.bookId}}" class="text-decoration-none text-primary bold ">
+                                    <h5 class="mt-3" th:text="${book.name}"/>
+                                </a>
+                                <b th:text="${book.author.name}"/> <br/><br/>
+                                <a class="btn btn-outline-warning edit-review" th:href="@{'/books/'+${book.bookId}}" >
+                                    <i class="bi bi-pencil"></i>
+                                    Review
+                                </a>
+
+                            </div>
+                            <span class="m-3"></span>
+                            <br/>
+                            <hr>
+                        </div>
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let ratings = /*[[${ratings}]]*/ {};
+        /*]]>*/
+
+
+        for (let i = 0; i < ratings.length; i++) {
+            document.getElementById('editReviewBtn'+ratings[i].book.bookId).onclick = (function (a) {
+                return function () {
+                    document.getElementById('ratings_reviews_form'+a).classList.toggle('d-none');
+                    document.getElementById('editReviewBtn'+a).classList.toggle('d-none');
+                };
+            })(ratings[i].book.bookId);
+        }
+        for (let i = 0; i < ratings.length; i++) {
+            document.getElementById('cancelReviewBtn'+ratings[i].book.bookId).onclick = (function (a) {
+                return function () {
+                    document.getElementById('ratings_reviews_form'+a).classList.toggle('d-none');
+                    document.getElementById('editReviewBtn'+a).classList.toggle('d-none');
+                };
+            })(ratings[i].book.bookId);
+        }
+    </script>
+</div>

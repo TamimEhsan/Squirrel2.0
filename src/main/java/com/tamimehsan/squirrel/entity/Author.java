@@ -5,6 +5,8 @@ package com.tamimehsan.squirrel.entity;
 //image
 //decription
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class Author {
     public String description;
 
     @OneToMany(mappedBy = "author")
+    @JsonManagedReference
     public List<Book> books;
 
 

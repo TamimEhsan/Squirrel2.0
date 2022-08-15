@@ -39,7 +39,7 @@
                     <b th:text="${wish.book.author.name}"/>
                     <h5 th:text="'Price: '+${wish.book.price}"/>
 <!--                    <a href=<%= "/my-section/wishlist/remove/"+wishList[i].BOOK_ID %>   class="btn btn-outline-danger">-->
-                    <a href="@{'/my-section/wishlist/remove/'+${wish.book.bookId}}"   class="btn btn-outline-danger">
+                    <a th:href="@{'/my-section/wishlist/remove/'+${wish.book.bookId}}"   class="btn btn-outline-danger">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-heartbreak" viewBox="0 0 16 16">
                         <path fill-rule="evenodd"
