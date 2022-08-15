@@ -1,3 +1,3 @@
 # Squirrel2.0
 
-Project for therap javafest
+Spring boot implementation of Squirrel.
